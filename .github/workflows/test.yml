@@ -34,10 +34,10 @@ jobs:
           workspace: ${{ github.workspace }}/monorepo
       - id: tag
         run: |
-          echo ${{ steps.changed.outputs.leaf }}"
-          echo ${{ steps.changed.outputs.need_ci }}
-          echo "::set-output name=leaf::${{ steps.changed.outputs.leaf }}"
-          echo "::set-output name=need_ci::${{ steps.changed.outputs.need_ci }}"
+          echo ${{ steps.change.outputs.leaf }}
+          echo ${{ steps.change.outputs.need_ci }}
+          echo "::set-output name=leaf::${{ steps.change.outputs.leaf }}"
+          echo "::set-output name=need_ci::${{ steps.change.outputs.need_ci }}"
   # service:
   #   runs-on: ubuntu-latest
   #   needs: test
