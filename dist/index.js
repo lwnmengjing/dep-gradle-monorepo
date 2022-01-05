@@ -93,16 +93,26 @@ function run() {
                         continue;
                     }
                     const lter = (0, fs_1.readFileSync)(settingsGradle, { encoding: 'utf8' }).matchAll(/includeBuild\s'([^']+)'/g);
-                    while (!lter.next().done) {
+                    for (const match of lter) {
                         core.debug(lter.next().value);
-                        const pathInclude = lter.next().value[1];
-                        if (pathInclude instanceof String) {
-                            if (pathInclude.split('/').length > 0 &&
-                                pathInclude.split('/')[1] === pwd) {
-                                depsAll[pwd][p] = {};
-                            }
+                        const pathInclude = match[0];
+                        if (pathInclude.split('/').length > 0 &&
+                            pathInclude.split('/')[1] === pwd) {
+                            depsAll[pwd][p] = {};
                         }
                     }
+                    // while (!lter.next().done) {
+                    //   core.debug(lter.next().value)
+                    //   const pathInclude = lter.next().value[1]
+                    //   if (pathInclude instanceof String) {
+                    //     if (
+                    //       pathInclude.split('/').length > 0 &&
+                    //       pathInclude.split('/')[1] === pwd
+                    //     ) {
+                    //       depsAll[pwd][p] = {}
+                    //     }
+                    //   }
+                    // }
                 }
             }
             let leaf = [];
