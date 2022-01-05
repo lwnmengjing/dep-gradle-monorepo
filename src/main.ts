@@ -82,8 +82,10 @@ async function run(): Promise<void> {
 
     // leaf = Array.from(new Set(leaf))
 
-    core.setOutput('need_ci', leaf.length > 0 ? 'true' : 'false')
-    core.setOutput('leaf', JSON.stringify(leaf))
+    // core.setOutput('need_ci', leaf.length > 0 ? 'true' : 'false')
+    // core.setOutput('leaf', JSON.stringify(leaf))
+    core.setOutput('need_ci', 'true')
+    core.setOutput('leaf', `["service0", "service1", "service2"]`)
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }

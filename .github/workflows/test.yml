@@ -34,6 +34,6 @@ jobs:
     # if: ${{ needs.test.outputs.need_ci }}
     strategy:
       matrix:
-        leaf: ${{ needs.test.outputs.leaf }}
+        leaf: ${{ fromJson(needs.test.outputs.leaf) }}
     steps:
       - run: echo ${{ matrix.leaf }}
