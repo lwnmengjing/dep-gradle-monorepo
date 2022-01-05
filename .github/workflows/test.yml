@@ -27,6 +27,7 @@ jobs:
           repository: lwnmengjing/mono-repo-gradle
           path: monorepo
       - id: change
+        name: self
         uses: ./
         with:
           change-paths: '.github/workflows/test.yaml,common0/settings.gradle,common1/settings.gradle,main.py,service2/settings.gradle'
