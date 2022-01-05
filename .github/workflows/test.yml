@@ -39,7 +39,7 @@ jobs:
   service:
     runs-on: ubuntu-latest
     needs: test
-    if: ${{ needs.test.outputs.need_ci }}
+    # if: ${{ needs.test.outputs.need_ci }}
     strategy:
       matrix:
         leaf: ${{ fromJson(needs.test.outputs.leaf) }}
