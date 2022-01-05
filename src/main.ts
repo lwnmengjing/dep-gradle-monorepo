@@ -80,7 +80,7 @@ async function run(): Promise<void> {
       }
     }
 
-    leaf = Array.from(new Set(leaf))
+    // leaf = Array.from(new Set(leaf))
 
     core.setOutput('need_ci', leaf.length > 0 ? 'true' : 'false')
     core.setOutput('leaf', JSON.stringify(leaf))
