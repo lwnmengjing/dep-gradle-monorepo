@@ -34,14 +34,16 @@ jobs:
           workspace: ${{ github.workspace }}/monorepo
       - id: tag
         run: |
+          echo ${{ steps.changed.outputs.leaf }}"
+          echo ${{ steps.changed.outputs.need_ci }}
           echo "::set-output name=leaf::${{ steps.changed.outputs.leaf }}"
           echo "::set-output name=need_ci::${{ steps.changed.outputs.need_ci }}"
-  service:
-    runs-on: ubuntu-latest
-    needs: test
-    # if: ${{ needs.test.outputs.need_ci }}
-    strategy:
-      matrix:
-        leaf: ${{ fromJson(needs.test.outputs.leaf) }}
-    steps:
-      - run: echo ${{ matrix.leaf }}
+  # service:
+  #   runs-on: ubuntu-latest
+  #   needs: test
+  #   if: ${{ needs.test.outputs.need_ci }}
+  #   strategy:
+  #     matrix:
+  #       leaf: ${{ fromJson(needs.test.outputs.leaf) }}
+  #   steps:
+  #     - run: echo ${{ matrix.leaf }}
