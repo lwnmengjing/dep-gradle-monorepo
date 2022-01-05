@@ -17,21 +17,29 @@ jobs:
   #         npm run all
   test: # make sure the action works on a clean machine without building
     runs-on: ubuntu-latest
+    outputs:
+      leaf: ${{ steps.tag.outputs.leaf }}
+      need_ci: ${{ steps.tag.outputs.need_ci }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/checkout@v2
         with:
           repository: lwnmengjing/mono-repo-gradle
           path: monorepo
-      - uses: ./
+      - id: change
+        uses: ./
         with:
           change-paths: '.github/workflows/test.yaml,common0/settings.gradle,common1/settings.gradle,main.py,service2/settings.gradle'
           ignore-paths: '.git,.github,.idea,.vscode,main.py,a,b'
           workspace: ${{ github.workspace }}/monorepo
+      - id: tag
+        run: |
+          echo "::set-output name=leaf::${{ steps.changed.outputs.leaf }}"
+          echo "::set-output name=need_ci::${{ steps.changed.outputs.need_ci }}"
   service:
     runs-on: ubuntu-latest
     needs: test
-    # if: ${{ needs.test.outputs.need_ci }}
+    if: ${{ needs.test.outputs.need_ci }}
     strategy:
       matrix:
         leaf: ${{ fromJson(needs.test.outputs.leaf) }}
