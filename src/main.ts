@@ -82,10 +82,8 @@ async function run(): Promise<void> {
 
     leaf = Array.from(new Set(leaf))
 
-    core.setOutput('need_ci', leaf.length > 0)
-    core.setOutput('leaf', leaf)
-
-    // core.setOutput('time', new Date().toTimeString())
+    core.setOutput('need_ci', leaf.length > 0 ? 'true' : 'false')
+    core.setOutput('leaf', JSON.stringify(leaf))
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }
