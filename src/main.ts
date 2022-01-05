@@ -36,6 +36,7 @@ async function run(): Promise<void> {
           /includeBuild\s'([^']+)'/g
         )
         while (!lter.next().done) {
+          core.debug(lter.next().value)
           const pathInclude = lter.next().value[1]
           if (pathInclude instanceof String) {
             if (
