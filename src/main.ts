@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
-import { statSync, readdirSync, existsSync, readFileSync } from 'fs'
-import { join } from 'path'
-import { dict, getInclude } from './leaf'
+import {dict, getInclude} from './leaf'
+import {existsSync, readFileSync, readdirSync, statSync} from 'fs'
+import {join} from 'path'
 
 async function run(): Promise<void> {
   try {
@@ -11,42 +11,48 @@ async function run(): Promise<void> {
     core.debug(`Ignores ${ignorePaths} `)
     const workspace: string = core.getInput('workspace')
     core.debug(`Workspace ${workspace}`)
-    const ignores = ignorePaths.split(',');
+    const ignores = ignorePaths.split(',')
 
-    let dirs:string[] = [];
-    readdirSync(workspace).forEach(e => {
+    const dirs: string[] = []
+
+    for (const e of readdirSync(workspace)) {
       if (statSync(join(workspace, e)).isDirectory() && !ignores.includes(e)) {
-        dirs.push(e);
+        dirs.push(e)
       }
-    });
+    }
 
-    const depsAll:dict = {};
-    dirs.forEach(p => {
-      depsAll[p] = {};
+    const depsAll: dict = {}
+    for (const p of dirs) {
+      depsAll[p] = {}
       for (const pwd of dirs) {
         if (pwd === p) {
           continue
         }
-        const settingsGradle: string = join(workspace, pwd, 'settings.gradle');
+        const settingsGradle: string = join(workspace, pwd, 'settings.gradle')
         if (!existsSync(settingsGradle)) {
           continue
         }
-        let lter = readFileSync(settingsGradle, {encoding: 'utf8'}).matchAll(/includeBuild\s\'([^\']+)\'/g)
+        const lter = readFileSync(settingsGradle, {encoding: 'utf8'}).matchAll(
+          /includeBuild\s'([^']+)'/g
+        )
         while (!lter.next().done) {
-           const pathInclude = lter.next().value[1]
-           if (pathInclude instanceof String) {
-             if (pathInclude.split('/').length > 0 && pathInclude.split('/')[1] === pwd) {
-               depsAll[pwd][p] = {};
-             }
-           }
+          const pathInclude = lter.next().value[1]
+          if (pathInclude instanceof String) {
+            if (
+              pathInclude.split('/').length > 0 &&
+              pathInclude.split('/')[1] === pwd
+            ) {
+              depsAll[pwd][p] = {}
+            }
+          }
         }
       }
-    });
+    }
 
-    let leaf: string[] = [];
-    let includeNodes: string[] = [];
+    let leaf: string[] = []
+    const includeNodes: string[] = []
 
-    changePaths.split(',').forEach(p => {
+    for (const p of changePaths.split(',')) {
       const a = p.split('/')[0].trim()
       if (ignores.includes(a)) {
         return
@@ -55,18 +61,18 @@ async function run(): Promise<void> {
         if (includeNodes.includes(a)) {
           return
         }
-        if (Object.keys(depsAll[a]).length == 0) {
+        if (Object.keys(depsAll[a]).length === 0) {
           leaf.push(a)
         } else {
           leaf.push(...getInclude(depsAll, a))
         }
       }
-    });
-    leaf = Array.from(new Set(leaf));
+    }
 
-    core.setOutput('need_ci', leaf.length > 0);
-    core.setOutput('leaf', leaf);
-    
+    leaf = Array.from(new Set(leaf))
+
+    core.setOutput('need_ci', leaf.length > 0)
+    core.setOutput('leaf', leaf)
 
     // core.setOutput('time', new Date().toTimeString())
   } catch (error) {
